@@ -1,0 +1,42 @@
+﻿@model WATHoot2.Models.IndexViewModel
+@{
+    ViewBag.Title = "Zarządzaj";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <h4>Zmień ustawienia konta</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>Mój zestaw pytań:</dt>
+        <dd>
+            @Html.ActionLink("Zarządzaj", "Index", "Questions", routeValues: null, new { @class = "btn btn-primary" })
+        </dd>
+
+        <dt></dt>
+        <dd></dd>
+
+        <dt>Hasło:</dt>
+        <dd>
+
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Zmień hasło", "ChangePassword", routeValues: null, new { @class = "btn btn-primary" })
+            }
+            else
+            {
+                @Html.ActionLink("Utwórz", "SetPassword", routeValues: null, new { @class = "btn btn-primary" })
+            }
+
+        </dd>
+        <dt></dt>
+        <dd></dd>
+        <dt>Usuwanie konta:</dt>
+        <dd>
+            @Html.ActionLink("Usuń konto", "DeleteAccount", routeValues: null, new { @class = "btn btn-primary" })
+        </dd>
+    </dl>
+</div>

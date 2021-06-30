@@ -1,0 +1,32 @@
+﻿@model WATHoot2.Models.DeleteAccountViewModel
+@{
+    ViewBag.Title = "Usuń konto";
+}
+
+<h2>@ViewBag.Title.</h2>
+<p class="text-info">
+    Czy na pewno chcesz usunąć swoje konto? Ten proces jest nieodwracalny! Wszystkie Twoje dane zostaną utracone.
+</p>
+
+@using (Html.BeginForm("DeleteAccount", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <h4>Dla potwierdzenia podaj swoje hasło</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10" style="padding: 20px 0px;">
+            <input type="submit" value="Usuń" class="btn btn-danger" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

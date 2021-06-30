@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "stupidtable@1.1.3",
+      "destination": "Scripts/stupidtable/"
+    }
+  ]
+}

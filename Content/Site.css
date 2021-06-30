@@ -1,0 +1,56 @@
+﻿html{
+    height: 100%;
+}
+body {
+    padding-top: 80px;
+    padding-bottom: 20px;
+    background-repeat: no-repeat;
+    background-size: auto;
+    min-height:100%;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    font-size: 1.3em;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-height: 100%;
+    display:block;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    background: rgb(80, 50, 150);
+    vertical-align: middle;
+    height: 30px;
+    width: 100%;
+    text-align: center;
+    padding: 4px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 800px !important;
+}
+
+.navbar{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    font-size: 1.3em;
+}
+
+.navbar-brand{
+    font-size: 1.3em;
+    line-height: 80%;
+}

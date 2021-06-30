@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm"}))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Witaj, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage",
+           @class = (ViewContext.RouteData.Values["action"].ToString() == "Index"
+                   && ViewContext.RouteData.Values["controller"].ToString() == "Manage") ? "nav-link active" : "nav-link"
+       })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Wyloguj</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Zarejestruj", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink",
+           @class = (ViewContext.RouteData.Values["action"].ToString() == "Register"
+                   && ViewContext.RouteData.Values["controller"].ToString() == "Account") ? "nav-link active" : "nav-link"
+       })</li>
+        <li>@Html.ActionLink("Zaloguj", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink",
+           @class = (ViewContext.RouteData.Values["action"].ToString() == "Login"
+                   && ViewContext.RouteData.Values["controller"].ToString() == "Account") ? "nav-link active" : "nav-link"
+       })</li>
+    </ul>
+}

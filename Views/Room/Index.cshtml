@@ -1,0 +1,409 @@
+﻿@using System.Security.Claims;
+@using Microsoft.AspNet.Identity;
+@model WATHoot2.Models.RoomViewModel
+@{
+    ViewBag.Title = Model.ID;
+}
+
+<div class="card text-white bg-info">
+    <div class="card-body">
+        <p id="roomName" class="card-text">@Model.ID</p>
+    </div>
+</div>
+<hr />
+@if (Model.Owner.Id == User.Identity.GetUserId())
+{
+    <!-- WIDOK WŁAŚCICIELA -->
+    @: Widok właściciela
+
+
+    <div class="row col-2">
+        <button id="startButton" class="btn-lg btn-success">
+            Rozpocznij!
+        </button>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <h2>Uczestnicy:</h2><br />
+        <div id="rank" class="mx-auto">
+            <table class="table table-hover table-dark" id="users">
+                <thead>
+                    <tr class="border-2 border-light table-primary">
+                        <th width="70%">
+                            Pseudonim
+                        </th>
+                        <th id="pointsColumn" data-sort="int" data-sort-default="desc" data-sort-onload=yes>
+                            Liczba punktów
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Users.Count; i++)
+                    {
+                        if (@Model.Users[i].UserName == Model.Owner.UserName) { continue; } // nie wypisuj ownera
+                        <tr id="@(Model.Users[i].UserName + "_row")" class="border-2 border-light">
+                            <td>@Model.Users[i].UserName</td>
+                            <td id="@(Model.Users[i].UserName + "_points")">0</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <!-- WIDOK UCZESTNIKA -->
+
+    <div class="row">
+        <h2>Właściciel: @Model.Owner.UserName</h2>
+    </div>
+
+    <!-- OCZEKIWANIE NA ROZPOCZECIE -->
+    <div class="row" id="before">
+        <div class="text-lg-center" style="font-size: 1.7em;">
+            Oczekiwanie na rozpoczęcie quizu przez właściciela...
+        </div>
+        <div class="text-lg-center" style="font-size: 1.3em;">
+            Aktualna liczba uczestników:
+        </div>
+        <div class="text-lg-center" style="font-size: 8em;" id="userCount">
+            @(Model.Users.Count)
+        </div>
+    </div>
+
+    <!-- ROZPOCZYNANIE -->
+    <div class="row" id="starting" style="display: none">
+        <div class="text-lg-center" style="font-size: 1.7em;">
+            Quiz się właśnie rozpoczyna!
+        </div>
+        <div class="text-lg-center" style="font-size: 1.3em;">
+            Ilość pytań:
+        </div>
+        <div class="text-lg-center" style="font-size: 4em;" id="qCount">
+
+        </div>
+    </div>
+
+    <!-- PODCZAS PYTANIA -->
+    <div>
+        <div class="row" id="inProgress" style="display: none">
+
+            <!-- NUMER PYTANIA -->
+            <div class="text-lg-center" style="font-size: 1.7em;">
+                Pytanie <span id="qNum"></span> / <span id="qTotal"></span>
+            </div>
+
+            <!-- TREŚĆ PYTANIA -->
+            <div class="text-lg-center" id="qContent" style="font-size: 1.3em;"> </div>
+
+            <!-- ODPOWIEDZI -->
+            <div class="mx-auto" style="height: 400px; text-align: center; display: block; align-content: center;" id="answers">
+                <div class="row mx-auto" style="height: 50%; width: 60%">
+                    <button class="btn btn-primary col" style="margin: 10px; font-size: 2em" id="aAns"></button>
+                    <button class="btn btn-info col" style="margin: 10px; font-size: 2em " id="bAns"></button>
+                </div>
+                <div class="row mx-auto" style="height: 50%; width: 60% ">
+                    <button class="btn btn-warning col" style="margin: 10px; font-size: 2em " id="cAns"></button><br />
+                    <button class="btn btn-danger col" style="margin: 10px; font-size: 2em " id="dAns"></button>
+                </div>
+            </div>
+
+            <!-- INFO CZY POPRAWNA CZY NIE -->
+            <div class="mx-auto col-4 btn-success border border-2 border-light rounded" style="text-align: center; display: none; align-content: center; font-size: 4em; padding: 40px; margin: 40px" id="reply">
+
+            </div>
+        </div>
+
+
+        <!-- OCZEKIWANIE NA RANKING -->
+        <div class="row" id="ending" style="display: none">
+            <div class="text-lg-center" style="font-size: 1.7em;">
+                Oczekiwanie na wyniki...
+            </div>
+            <div class="text-lg-center" style="font-size: 1.3em;">
+                Za chwile zobaczysz ranking
+            </div>
+        </div>
+
+        <!-- RANKING -->
+        <div class="row" style="display: none" id="ranking">
+            <div class="text-lg-center" style="font-size: 1.7em;">
+                Ranking
+            </div>
+
+            <div id="rankingTab">
+
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div id="progressDiv" class="progress fixed-bottom border border-2 border-light" style="bottom: 80px; border-radius: 10px; width: 70%; left: 50%; transform: translate(-50%, 0); height: 35px">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; height: 100%; border-radius: 10px;" id="progressBar"></div>
+        </div>
+    </div>
+
+}
+
+
+
+
+<input type="hidden" id="connID" />
+<input type="hidden" id="ownerConnID" />
+<input type="hidden" id="userID" value="@User.Identity.GetUserId()" />
+
+
+
+
+
+@section scripts {
+    <!--Script references. -->
+    <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
+    <!--Reference the SignalR library. -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="~/Scripts/stupidtable.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.2.min.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="~/signalr/hubs"></script>
+
+    <!-- skrypt generowany oddzielnie dla uczestnika i wlasciciela -->
+
+
+    <script>
+        $(function () {
+
+            //utworz proxy
+            var chat = $.connection.quizHub;
+            var currentQuestion;
+
+            //rozpoczecie polaczenia i jego następstwa
+            $.connection.hub.start().done(function () {
+                //ustaw connID w hidden input
+                $('#connID').val($.connection.hub.id);
+
+                //dolacz do quizu
+                chat.server.joinQuiz($('#roomName').text());
+            });
+
+        @if (Model.Owner.Id == User.Identity.GetUserId())
+        {
+            <text>
+
+
+
+
+
+            //Deklaracja zdalnych funkcji klienckich dla wlasciciela:
+
+            //uzytkownik dolaczyl
+            chat.client.userJoined = function (name) {
+                console.log(name + " dołączył");
+                $('#users tbody').append('<tr id="' + name + '_row" class="border-2 border-light"><td>' + name + '</td><td id="' + name + '_points">0</td></tr>');
+            }
+
+            //uzytkownik wyszedl
+            chat.client.userLeft = function (name) {
+                rmUser(name);
+            }
+
+            //uzytkownik zdobyl punkt
+            chat.client.addPoint = function (userName) {
+                var prev = parseInt($('#' + userName + '_points').text());
+                $('#' + userName + '_points').text(prev + 1);
+
+                update(userName);
+            }
+
+            //quiz się zakończył, przesylanie wynikow
+            chat.client.endQuiz = function () {
+                //przeslij cala tabele
+                chat.server.showRanking($('#rank').html(), $('#roomName').text());
+                $('#startButton').show(200);
+            }
+
+
+
+
+
+            //Deklaracja lokalnych funkcji dla wlasciciela:
+
+            //startowanie quizu z przycisku
+            $('#startButton').click(function ownerStart() {
+                //wywolaj na hubie StartQuiz
+                chat.server.startQuiz($('#roomName').text());
+                $('#startButton').hide(200);
+
+                //zeruj punkty
+                var rows = $('#users tr');
+                var i;
+                for (i = 1; i < rows.length; i++) {
+                    var id = rows[i].id;
+                    var name = id.substr(0, id.length - 4);
+                    $('#' + name + '_points').text(0);
+                }
+            });
+
+
+            //usuwanie uczestnika z listy
+            function rmUser(name) {
+                /*
+                var items = $('#users').children();
+                for (var i = 0; i < items.length; ++i) {
+                    if (items[i].innerText == name) {
+                        items[i].parentNode.removeChild(items[i]);
+                    }
+                }
+                */
+                $('#users #' + name + '_row').remove();
+            }
+
+            update = function (userName) {
+                var thisRow = $('#' + userName + '_row');
+                var mojepunkty = parseInt($('#' + userName + '_points').text());
+
+                //znajdz miejsce w rankingu
+                var rows = $('#users tr');
+                var i;
+                for (i = 1; i < rows.length; i++) {
+                    if (rows[i].id === thisRow.id) {
+                        break;
+                    }
+                }
+
+                //$('#users tbody').remove(thisRow);
+
+                //znajdz nowe miejsce
+                for (var j = rows.length - 1; j > 0; j--) {
+                    var id = rows[j].id;
+                    var name = id.substr(0, id.length - 4);
+                    var jegopunkty = parseInt($('#' + name + '_points').text());
+                    if (mojepunkty > jegopunkty) {
+                        thisRow.insertBefore(rows[j]);
+                        if (j == 1) break;
+                    }
+                }
+            }
+
+
+            </text>
+        } else
+        {
+            <text>
+
+
+
+            //Deklaracja zdalnych funkcji klienckich dla uczestnika:
+
+
+            //uzytkownik dolaczyl
+            chat.client.userJoined = function (name) {
+                chUserCount(1);
+            }
+
+            //uzytkownik wyszedl
+            chat.client.userLeft = function (name) {
+                chUserCount(-1);
+            }
+
+            //wlasciciel rozpoczal quiz (n - liczba pytan)
+            chat.client.startQuiz = function (n, ownerConnID) {
+                $('#before').hide(1000);
+                $('#ranking').hide(1000);
+                $('#qCount').text(n);
+                $('#ownerConnID').text(ownerConnID);
+                $('#starting').show(1000);
+                $('#progressBar').css('width', 0 + '%').attr('aria-valuenow', 0);
+            }
+
+
+            //quiz przechodzi do nastepnego pytania
+            chat.client.nextQuestion = function (qID, qNum, qTotal, content, a, b, c, d) {
+                currentQuestion = qID;
+                $('#before').hide(0);
+                $('#reply').hide(200);
+                $('#starting').hide(1000);
+                $('#answers').hide(0);
+                var progress = (qNum / qTotal) * 100;
+                //schowaj, zmien wartosci i pokaz
+                $('#inProgress').hide(800, function () {
+                    //numer pytania
+                    $('#qNum').text(qNum);
+                    $('#qTotal').text(qTotal);
+                    //tresc i odpowiedzi
+                    $('#qContent').text(content);
+                    $('#aAns').text(a);
+                    $('#bAns').text(b);
+                    $('#cAns').text(c);
+                    $('#dAns').text(d);
+
+                    //progressbar
+                    $('#answers').show();
+                    $('#inProgress').show(800);
+                    $('#progressBar').css('width', progress + '%').attr('aria-valuenow', progress);
+                });
+            }
+
+            //quiz się zakończył, oczekiwanie na wyniki
+            chat.client.endQuiz = function () {
+                $('#inProgress').hide(1000);
+                $('#ending').show(1000);
+            }
+
+            //wyswietlenie tabeli wynikow
+            chat.client.showRanking = function (ranking) {
+                console.log(ranking);
+                $('#ending').hide(1000);
+                $('#progressDiv').hide(1000);
+                $('#rankingTab').html(ranking);
+                $('#ranking').show(1000);
+            }
+
+            //Hub odpowiada czy poprawnie odpowiedzial czy nie
+            chat.client.reply = function (correct) {
+                if (correct) { // jesli poprawnie
+                    $('#reply').removeClass('btn-danger').addClass('btn-success').text('Dobrze!').show(200);
+                } else {// jesli niepoprawnie
+                    $('#reply').removeClass('btn-success').addClass('btn-danger').text('Źle!').show(200);
+                }
+
+            }
+
+
+            //Deklaracja lokalnych funkcji dla uczestnika:
+
+            //przy zamykaniu strony opusc quiz
+            window.addEventListener("beforeunload", function (e) {
+                chat.server.leaveQuiz($('#roomName').text());
+                return null;
+            });
+            //wyslanie odpowiedzi na pytanie do serwera
+            $('#aAns, #bAns, #cAns, #dAns').click(function () {
+                $('#answers').hide(0);
+                var ans = this.id[0].toUpperCase();
+                chat.server.answer(currentQuestion, ans, $('#roomName').text(), $('#ownerConnID').text());
+
+            });
+
+
+            //zmiana liczby uzytkownikow
+            function chUserCount(x) {
+                let nr = document.getElementById('userCount');
+                let c = parseInt(nr.innerText);
+                nr.innerText = (c + x);
+
+                //let c = parseInt($('#userCount').text());
+                //$('#userCount').text(c + x);
+            }
+
+
+
+            </text>
+        }
+
+
+        });
+    </script>
+
+}

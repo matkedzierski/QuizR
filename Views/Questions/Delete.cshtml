@@ -1,0 +1,51 @@
+﻿@model WATHoot2.Models.Question
+
+@{
+    ViewBag.Title = "Usuwanie";
+}
+
+<h2>Usuwanie pytania</h2>
+
+<h3>Czy na pewno chcesz usunąć to pytanie?</h3>
+<div>
+    <h4>Question</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+
+        <dt>
+            Odpowiedzi
+        </dt>
+
+        <dd>
+            A) @Model.Aans<br/>
+            B) @Model.Bans<br />
+            C) @Model.Cans<br />
+            D) @Model.Dans
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Correct)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Correct)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+<div class="form-actions no-color">
+    <input type="submit" value="Usuń" class="btn btn-outline-danger" /> 
+    @Html.ActionLink("Anuluj", "Index", routeValues: null, new { @class = "btn btn-outline-success" })
+
+</div>
+    }
+</div>
