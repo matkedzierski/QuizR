@@ -18,6 +18,22 @@ namespace WATHoot2.Classes
     {
         public ApplicationDbContext db = new ApplicationDbContext();
 
+        // nawiązanie połączenia z hubem (bardziej do debugowania)
+        public override Task OnConnected()
+        {
+            //znajdz z kontekstu ID i nick uzytkownika
+            var userID = Context.User.Identity.GetUserId();
+            var userName = Context.User.Identity.Name;
+
+            //info na debug
+            Debug.WriteLine(userName + " połączył się!");
+            Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
+            Debug.WriteLine("  UserID: " + userID);
+
+            //metoda z klasy bazowej
+            return base.OnConnected();
+        }
+
         // dolaczanie uczestnika do quizu
         public void JoinQuiz(string name)
         {
@@ -42,39 +58,10 @@ namespace WATHoot2.Classes
             }
 
             //powiadom pozostalych o dolaczeniu
-            Clients.OthersInGroup(name).userJoined(userName);
+            Clients.Group(name).userJoined(userName);
 
             //info na debug
             Debug.WriteLine(userName + " dołączył do quizu: " + name);
-            Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
-            Debug.WriteLine("  UserID: " + userID);
-        }
-
-        // opuszczanie quizu
-        public void LeaveQuiz(string name)
-        {
-            //znajdz z kontekstu ID i nick uzytkownika
-            var userID = Context.User.Identity.GetUserId();
-            var userName = Context.User.Identity.Name;
-
-            //usun uzytkownika z grupy SignalR
-            Groups.Remove(Context.ConnectionId, name);
-
-            //znajdz w bazie pokoj i usera
-            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == name); //znajdz z bazy
-            var roomUser = room?.Users.Find(u => u.Id == userID); // znajdz uzytkownika w kontekscie pokoju
-
-            if (room.Owner.Id == userID) return; // nie usuwaj ownera z listy uczestnikow tylko z grupy signalR
-
-            //usun z pokoju w bazie danych
-            room?.Users.Remove(roomUser);
-            db.SaveChanges();
-
-            //powiadom pozostalych o opuszczeniu
-            Clients.OthersInGroup(name).userLeft(userName);
-
-            //info na debug
-            Debug.WriteLine(userName + " opuścił quiz: " + name);
             Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
             Debug.WriteLine("  UserID: " + userID);
         }
@@ -108,7 +95,7 @@ namespace WATHoot2.Classes
             quizThread.Start(paramArr);
         }
 
-        // rozpoczęcie quizu
+        // udzielenie odpowiedzi
         public void Answer(int questionID, string answer, string roomName, string ownerConnID)
         {
             //znajdz z kontekstu ID i nick uzytkownika
@@ -129,37 +116,12 @@ namespace WATHoot2.Classes
             //wyslij do uczestnikow rozpoczecie quizu
             Clients.Caller.reply(guessed);
 
-            if(guessed)
+            if (guessed)
                 Clients.Client(ownerConnID).addPoint(userName);
 
             //info na debug
             Debug.WriteLine(userName + " odpowiedział " + (guessed ? "" : "nie") + "poprawnie na pytanie o ID: " + questionID);
             Debug.WriteLine(" Odpowiedź: " + answer + ", poprawna: " + correctAnswer);
-        }
-
-
-        //wysylaj kolejne pytanie w okreslonych interwalach
-        private void HandleQuiz(object paramArray)
-        {
-            //wczytaj parametry watku
-            var pars = paramArray as object[];
-            var name = pars[0] as string;
-            var qs = pars[1] as List<Question>;
-            var i = 1;
-            var n = qs.Count;
-            Thread.Sleep(5000);
-
-            //wysylaj w okreslonych interwalach pytania i odpowiedzi
-            foreach (Question q in qs)
-            {
-                Debug.WriteLine("Question: " + q.Content);
-                Clients.OthersInGroup(name).nextQuestion(q.ID, i, n, q.Content, q.Aans, q.Bans, q.Cans, q.Dans);
-                i++;
-                Thread.Sleep(4000);
-            }
-
-            //powiadom wszystkich, wlacznie z ownerem o zakonczeniu
-            Clients.Group(name).endQuiz();
         }
 
         //przeslij tabele z rankingiem od ownera do uczestnikow
@@ -182,20 +144,33 @@ namespace WATHoot2.Classes
             Clients.OthersInGroup(name).showRanking(rankingJSON);
         }
 
-        // nawiązanie połączenia z hubem (bardziej do debugowania)
-        public override Task OnConnected()
+        // opuszczanie quizu
+        public void LeaveQuiz(string name)
         {
             //znajdz z kontekstu ID i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
+            //usun uzytkownika z grupy SignalR
+            Groups.Remove(Context.ConnectionId, name);
+
+            //znajdz w bazie pokoj i usera
+            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == name); //znajdz z bazy
+            var roomUser = room?.Users.Find(u => u.Id == userID); // znajdz uzytkownika w kontekscie pokoju
+
+            if (room.Owner.Id == userID) return; // nie usuwaj ownera z listy uczestnikow tylko z grupy signalR
+
+            //usun z pokoju w bazie danych
+            room?.Users.Remove(roomUser);
+            db.SaveChanges();
+
+            //powiadom pozostalych o opuszczeniu
+            Clients.OthersInGroup(name).userLeft(userName);
+
             //info na debug
-            Debug.WriteLine(userName + " połączył się!");
+            Debug.WriteLine(userName + " opuścił quiz: " + name);
             Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
             Debug.WriteLine("  UserID: " + userID);
-
-            //metoda z klasy bazowej
-            return base.OnConnected();
         }
 
         // rozłączenie z hubem (bardziej do debugowania)
@@ -213,5 +188,31 @@ namespace WATHoot2.Classes
             //metoda z klasy bazowej
             return base.OnDisconnected(stopCalled);
         }
+
+
+
+        // wysylaj kolejne pytanie w okreslonych interwalach (DZIAŁA NA WĄTKU)
+        private void HandleQuiz(object paramArray)
+        {
+            //wczytaj parametry watku
+            var pars = paramArray as object[];
+            var name = pars[0] as string;
+            var qs = pars[1] as List<Question>;
+            var i = 1;
+            var n = qs.Count;
+            Thread.Sleep(5000);
+
+            //wysylaj w okreslonych interwalach pytania i odpowiedzi
+            foreach (Question q in qs)
+            {
+                Debug.WriteLine("Question: " + q.Content);
+                Clients.OthersInGroup(name).nextQuestion(q.ID, i, n, q.Content, q.Aans, q.Bans, q.Cans, q.Dans);
+                i++;
+                Thread.Sleep(4000);
+            }
+
+            //powiadom wszystkich, wlacznie z ownerem o zakonczeniu
+            Clients.Group(name).endQuiz();
+        } 
     }
 }
