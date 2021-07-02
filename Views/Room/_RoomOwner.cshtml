@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity;
+@model WATHoot2.Models.RoomViewModel
+
+Widok właściciela
+
+
+<div class="row col-2">
+    <button id="startButton" class="btn-lg btn-success">
+        Rozpocznij!
+    </button>
+</div>
+
+<hr />
+
+<div class="row">
+    <h2>Uczestnicy:</h2><br />
+    <div id="rank" class="mx-auto">
+        <table class="table table-hover table-dark" id="users">
+            <thead>
+                <tr class="border-2 border-light table-primary">
+                    <th width="70%">
+                        Pseudonim
+                    </th>
+                    <th id="pointsColumn" data-sort="int" data-sort-default="desc" data-sort-onload=yes>
+                        Liczba punktów
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Users.Count; i++)
+                {
+                    if (@Model.Users[i].UserName == Model.Owner.UserName) { continue; } // nie wypisuj ownera
+                    <tr id="@(Model.Users[i].UserName + "_row")" class="border-2 border-light">
+                        <td>@Model.Users[i].UserName</td>
+                        <td id="@(Model.Users[i].UserName + "_points")">0</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

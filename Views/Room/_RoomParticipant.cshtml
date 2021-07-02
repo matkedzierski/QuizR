@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNet.Identity;
+@model WATHoot2.Models.RoomViewModel
+
+
+
+
+
+<div class="row">
+    <h2>Właściciel: @Model.Owner.UserName</h2>
+</div>
+
+<!-- OCZEKIWANIE NA ROZPOCZECIE -->
+<div class="row" id="before">
+    <div class="text-lg-center" style="font-size: 1.7em;">
+        Oczekiwanie na rozpoczęcie quizu przez właściciela...
+    </div>
+    <div class="text-lg-center" style="font-size: 1.3em;">
+        Aktualna liczba uczestników:
+    </div>
+    <div class="text-lg-center" style="font-size: 8em;" id="userCount">
+        @(Model.Users.Count)
+    </div>
+</div>
+
+<!-- ROZPOCZYNANIE -->
+<div class="row" id="starting" style="display: none">
+    <div class="text-lg-center" style="font-size: 1.7em;">
+        Quiz się właśnie rozpoczyna!
+    </div>
+    <div class="text-lg-center" style="font-size: 1.3em;">
+        Ilość pytań:
+    </div>
+    <div class="text-lg-center" style="font-size: 4em;" id="qCount">
+
+    </div>
+</div>
+
+<!-- PODCZAS PYTANIA -->
+<div>
+    <div class="row" id="inProgress" style="display: none">
+
+        <!-- NUMER PYTANIA -->
+        <div class="text-lg-center" style="font-size: 1.7em;">
+            Pytanie <span id="qNum"></span> / <span id="qTotal"></span>
+        </div>
+
+        <!-- TREŚĆ PYTANIA -->
+        <div class="text-lg-center" id="qContent" style="font-size: 1.3em;"> </div>
+
+        <!-- ODPOWIEDZI -->
+        <div class="mx-auto" style="height: 400px; text-align: center; display: block; align-content: center;" id="answers">
+            <div class="row mx-auto" style="height: 50%; width: 60%">
+                <button class="btn btn-primary col" style="margin: 10px; font-size: 2em" id="aAns"></button>
+                <button class="btn btn-info col" style="margin: 10px; font-size: 2em " id="bAns"></button>
+            </div>
+            <div class="row mx-auto" style="height: 50%; width: 60% ">
+                <button class="btn btn-warning col" style="margin: 10px; font-size: 2em " id="cAns"></button><br />
+                <button class="btn btn-danger col" style="margin: 10px; font-size: 2em " id="dAns"></button>
+            </div>
+        </div>
+
+        <!-- INFO CZY POPRAWNA CZY NIE -->
+        <div class="mx-auto col-4 btn-success border border-2 border-light rounded" style="text-align: center; display: none; align-content: center; font-size: 4em; padding: 40px; margin: 40px" id="reply">
+
+        </div>
+    </div>
+
+
+    <!-- OCZEKIWANIE NA RANKING -->
+    <div class="row" id="ending" style="display: none">
+        <div class="text-lg-center" style="font-size: 1.7em;">
+            Oczekiwanie na wyniki...
+        </div>
+        <div class="text-lg-center" style="font-size: 1.3em;">
+            Za chwile zobaczysz ranking
+        </div>
+    </div>
+
+    <!-- RANKING -->
+    <div class="row" style="display: none" id="ranking">
+        <div class="text-lg-center" style="font-size: 1.7em;">
+            Ranking
+        </div>
+
+        <div id="rankingTab">
+
+        </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="progressDiv" class="progress fixed-bottom border border-2 border-light" style="bottom: 80px; border-radius: 10px; width: 70%; left: 50%; transform: translate(-50%, 0); height: 35px">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; height: 100%; border-radius: 10px;" id="progressBar"></div>
+    </div>
+</div>
+

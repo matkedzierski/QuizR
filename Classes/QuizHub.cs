@@ -208,7 +208,7 @@ namespace WATHoot2.Classes
                 Debug.WriteLine("Question: " + q.Content);
                 Clients.OthersInGroup(name).nextQuestion(q.ID, i, n, q.Content, q.Aans, q.Bans, q.Cans, q.Dans);
                 i++;
-                Thread.Sleep(4000);
+                Thread.Sleep(10000);
             }
 
             //powiadom wszystkich, wlacznie z ownerem o zakonczeniu

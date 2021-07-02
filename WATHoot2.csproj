@@ -188,8 +188,6 @@
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.4.2.js" />
     <Content Include="Scripts\jquery.signalR-2.4.2.min.js" />
-    <Content Include="Scripts\stupidtable.js" />
-    <Content Include="Scripts\stupidtable.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -208,9 +206,12 @@
     <Content Include="Views\Questions\Index.cshtml" />
     <Content Include="Views\Questions\Create.cshtml" />
     <Content Include="Views\Questions\Delete.cshtml" />
+    <Content Include="Views\Room\_RoomOwner.cshtml" />
+    <Content Include="Views\Room\_RoomParticipant.cshtml" />
+    <Content Include="Scripts\owner.js" />
+    <Content Include="Scripts\participant.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Scripts\stupidtable\" />
     <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>
