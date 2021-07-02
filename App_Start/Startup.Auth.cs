@@ -4,9 +4,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
-using WATHoot2.Models;
+using QuizR.Models;
 
-namespace WATHoot2
+namespace QuizR
 {
     public partial class Startup
     {

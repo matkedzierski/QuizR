@@ -3,9 +3,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
-using WATHoot2.Models;
+using QuizR.Models;
 
-namespace WATHoot2.Controllers
+namespace QuizR.Controllers
 {
     public class QuestionsController : Controller
     {

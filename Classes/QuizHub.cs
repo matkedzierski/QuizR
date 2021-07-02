@@ -7,11 +7,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using WATHoot2.Models;
+using QuizR.Models;
 using Microsoft.AspNet.Identity;
 using System.Threading;
 
-namespace WATHoot2.Classes
+namespace QuizR.Classes
 {
  
     public class QuizHub : Hub

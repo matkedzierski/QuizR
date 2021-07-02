@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace WATHoot2.Models
+namespace QuizR.Models
 {
     public class QuestionSet
     {

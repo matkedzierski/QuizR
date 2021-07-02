@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(WATHoot2.Startup))]
-namespace WATHoot2
+[assembly: OwinStartup(typeof(QuizR.Startup))]
+namespace QuizR
 {
     public partial class Startup
     {

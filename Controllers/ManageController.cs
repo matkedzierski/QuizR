@@ -6,9 +6,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using WATHoot2.Models;
+using QuizR.Models;
 
-namespace WATHoot2.Controllers
+namespace QuizR.Controllers
 {
     [Authorize]
     public class ManageController : Controller

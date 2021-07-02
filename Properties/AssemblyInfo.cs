@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Informacje ogólne o zestawie zależą od poniższego
 // zestawu atrybutów. Zmień wartości tych atrybutów, aby zmodyfikować informacje
 // związane z zestawem.
-[assembly: AssemblyTitle("WATHoot")]
+[assembly: AssemblyTitle("QuizR")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WATHoot")]
+[assembly: AssemblyProduct("QuizR")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // Możesz określić wszystkie te wartości lub użyć wartości domyślnych numerów kompilacji i poprawki,
 // stosując znak „*”, jak pokazano poniżej:
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]

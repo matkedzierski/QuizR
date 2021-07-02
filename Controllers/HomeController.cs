@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace WATHoot2.Controllers
+namespace QuizR.Controllers
 {
     public class HomeController : Controller
     {

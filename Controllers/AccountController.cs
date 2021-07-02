@@ -8,9 +8,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using WATHoot2.Models;
+using QuizR.Models;
 
-namespace WATHoot2.Controllers
+namespace QuizR.Controllers
 {
     [Authorize]
     public class AccountController : Controller
@@ -89,7 +89,7 @@ namespace WATHoot2.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Nieprawidłowa próba logowania.");
+                    ModelState.AddModelError("", "Logowanie nie powiodło się.");
                     return View(model);
             }
         }

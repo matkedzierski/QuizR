@@ -10,9 +10,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using WATHoot2.Models;
+using QuizR.Models;
 
-namespace WATHoot2
+namespace QuizR
 {
     public class EmailService : IIdentityMessageService
     {

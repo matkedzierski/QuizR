@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace WATHoot2.Models
+namespace QuizR.Models
 {
     public class RoomViewModel
     {

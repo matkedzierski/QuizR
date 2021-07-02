@@ -5,10 +5,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.SignalR;
-using WATHoot2.Models;
+using QuizR.Models;
 using System.Data.Entity;
 
-namespace WATHoot2.Controllers
+namespace QuizR.Controllers
 {
     [System.Web.Mvc.Authorize]
     public class RoomController : Controller

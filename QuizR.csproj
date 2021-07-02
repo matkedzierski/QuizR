@@ -11,8 +11,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WATHoot2</RootNamespace>
-    <AssemblyName>WATHoot2</AssemblyName>
+    <RootNamespace>QuizR</RootNamespace>
+    <AssemblyName>QuizR</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
@@ -173,16 +173,15 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\wathoot.mdf" />
-    <Content Include="App_Data\wathoot_log.ldf">
-      <DependentUpon>wathoot.mdf</DependentUpon>
+    <Content Include="App_Data\quizr.mdf" />
+    <Content Include="App_Data\quizr_log.ldf">
+      <DependentUpon>quizr.mdf</DependentUpon>
     </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="libman.json" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -199,8 +198,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Room\Index.cshtml" />
     <Content Include="Views\Questions\Index.cshtml" />
@@ -215,22 +212,10 @@
     <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\Register.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Manage\ChangePassword.cshtml" />
@@ -240,9 +225,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Manage\SetPassword.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\Lockout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
@@ -270,7 +252,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>58997</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/WATHoot</IISUrl>
+          <IISUrl>http://localhost/quizr</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
