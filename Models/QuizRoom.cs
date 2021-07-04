@@ -6,12 +6,12 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace QuizR.Models
 {
-    public class RoomViewModel
+    public class QuizRoom
     {
         [Key]
         public string ID { get; set; }
         public ApplicationUser Owner { get; set; }
-
-        public virtual List<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();        
+        public QuestionSet Set { get; set; }
+        public virtual List<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     }
 }

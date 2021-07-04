@@ -1,0 +1,23 @@
+﻿@model QuizR.Models.QuestionSet
+
+@{
+    ViewBag.Title = "Usuwanie zestawu";
+}
+
+<h2>Usuwanie zestawu</h2>
+
+<h3>Czy na pewno chcesz usunąć zestaw @Html.DisplayFor(model => model.Name)?</h3>
+<div>
+    <h4 class="text-danger">Ta operacja jest nieodwracalna!</h4>
+    <hr />
+    Ten zestaw zawiera @Model.Questions.Count pytań.<br/>
+    Nie będzie możliwości odzyskania ich!
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Usuń" class="btn btn-outline-danger" /> 
+        @Html.ActionLink("Anuluj", "Index", routeValues: null, new { @class = "btn btn-outline-success" })
+    </div>
+    }
+</div>

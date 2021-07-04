@@ -35,7 +35,7 @@ namespace QuizR.Controllers
                 if (room == null) //jesli w bazie nie ma
                 {
                     Debug.WriteLine("Creating: " + RoomID);
-                    room = new RoomViewModel() { ID = RoomID, Owner = user };
+                    room = new QuizRoom() { ID = RoomID, Owner = user };
                     db.Rooms.Add(room);
                     //room.Users.Add(user);
                     db.SaveChanges();

@@ -24,7 +24,7 @@
         </dt>
 
         <dd>
-            A) @Model.Aans<br/>
+            A) @Model.Aans<br />
             B) @Model.Bans<br />
             C) @Model.Cans<br />
             D) @Model.Dans
@@ -39,13 +39,13 @@
         </dd>
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Usuń" class="btn btn-outline-danger" />
+            @Html.ActionLink("Anuluj", "Manage", new { id = Model.Set.ID }, new { @class = "btn btn-outline-success" })
 
-<div class="form-actions no-color">
-    <input type="submit" value="Usuń" class="btn btn-outline-danger" /> 
-    @Html.ActionLink("Anuluj", "Index", routeValues: null, new { @class = "btn btn-outline-success" })
-
-</div>
+        </div>
     }
 </div>

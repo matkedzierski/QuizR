@@ -69,7 +69,7 @@ namespace QuizR.Models
         }
 */
 
-        public DbSet<RoomViewModel> Rooms { get; set; }
+        public DbSet<QuizRoom> Rooms { get; set; }
         public DbSet<QuestionSet> QuestionSets { get; set; }
         public DbSet<Question> Questions { get; set; }
     }

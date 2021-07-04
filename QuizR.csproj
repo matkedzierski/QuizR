@@ -159,24 +159,22 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\QuestionSetsController.cs" />
     <Compile Include="Controllers\QuestionsController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionSet.cs" />
-    <Compile Include="Models\RoomViewModel.cs" />
+    <Compile Include="Models\QuizRoom.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\quizr.mdf" />
-    <Content Include="App_Data\quizr_log.ldf">
-      <DependentUpon>quizr.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -200,15 +198,21 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Room\Index.cshtml" />
-    <Content Include="Views\Questions\Index.cshtml" />
+    <Content Include="Views\Questions\Manage.cshtml" />
     <Content Include="Views\Questions\Create.cshtml" />
     <Content Include="Views\Questions\Delete.cshtml" />
     <Content Include="Views\Room\_RoomOwner.cshtml" />
     <Content Include="Views\Room\_RoomParticipant.cshtml" />
     <Content Include="Scripts\owner.js" />
     <Content Include="Scripts\participant.js" />
+    <Content Include="Views\QuestionSets\Create.cshtml" />
+    <Content Include="Views\QuestionSets\Delete.cshtml" />
+    <Content Include="Views\QuestionSets\Index.cshtml" />
+    <Content Include="Views\QuestionSets\Edit.cshtml" />
+    <Content Include="Views\Questions\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>

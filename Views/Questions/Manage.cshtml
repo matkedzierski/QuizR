@@ -1,14 +1,15 @@
 ﻿@model QuizR.Models.QuestionSet
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Zestaw";
 }
 
-<h2>Mój zestaw pytań</h2>
+<h2>@Model.Name</h2>
 <br />
 
 <p>
-    @Html.ActionLink("Dodaj pytanie", "Create", routeValues: null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Powrót", "Index", "QuestionSets", routeValues: null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Dodaj pytanie", "Create", new { setID = Model.ID }, new { @class = "btn btn-info" })
 </p>
 
 @if (Model.Questions.Count == 0)
@@ -16,7 +17,7 @@
     <div class="card border-warning" style="width: 40%; position: absolute; left: 50%; transform: translate(-50%, 0)">
         <div class="card-body">
             <h3 class="card-title">Brak pytań!</h3>
-            <p class="card-text">Nie masz jeszcze żadnych pytań.<br/>
+            <p class="card-text">W tym zestawie nie ma jeszcze żadnych pytań.<br/>
             Użyj przycisku "Dodaj pytanie".</p>
         </div>
     </div>
