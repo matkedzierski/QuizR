@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNet.Identity;
+@model QuizR.Models.QuizRoom
+@{
+    ViewBag.Title = Model.ID;
+}
+
+
+<input type="hidden" id="ownerConnID" />
+<input type="hidden" id="userID" value="@User.Identity.GetUserId()" />
+
+
+<div class="card text-white bg-info">
+    <div class="card-body">
+        <p id="roomName" class="card-text">@Model.ID</p>
+    </div>
+</div>
+<hr />
+@if (Model.Owner.Id == User.Identity.GetUserId())
+{
+    //widok wlasciciela
+    Html.RenderPartial("_RoomOwner", Model);
+    @section scripts{
+        @Scripts.Render("~/Scripts/jquery-1.6.4.min.js")
+        @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.min.js")
+        @Scripts.Render("~/signalr/hubs")
+        @Scripts.Render("~/Scripts/owner.js")
+    }
+}
+else
+{
+    //widok uczestnika
+    Html.RenderPartial("_RoomParticipant", Model);
+    @section scripts{
+        @Scripts.Render("~/Scripts/jquery-1.6.4.min.js")
+        @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.min.js")
+        @Scripts.Render("~/signalr/hubs")
+        @Scripts.Render("~/Scripts/participant.js")
+    }
+}

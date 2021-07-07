@@ -21,7 +21,7 @@ namespace QuizR.Classes
         // nawiązanie połączenia z hubem (bardziej do debugowania)
         public override Task OnConnected()
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
@@ -37,7 +37,7 @@ namespace QuizR.Classes
         // dolaczanie uczestnika do quizu
         public void JoinQuiz(string name)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
@@ -69,18 +69,20 @@ namespace QuizR.Classes
         // rozpoczęcie quizu
         public void StartQuiz(string name)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
             //sprawdz czy jest ownerem
-            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == name); //znajdz z bazy
+            var room = db.Rooms
+                .Include(r => r.Owner)
+                .Include(r => r.Set)
+                .First(r => r.ID == name); 
             var owner = room.Owner;
             if (owner.Id != userID) return;
 
-            //wczytaj z bazy zestaw pytan ownera
-            var questionSet = db.QuestionSets.First(qs => qs.Owner.Id == userID);
-            var n = questionSet.Questions.Count;
+            //wczytaj z bazy zestaw pytan powiazany z pokojem,
+            var n = room.Set.Questions.Count;
 
             //info na debug
             Debug.WriteLine(userName + " rozpoczął rozgrywke!");
@@ -89,24 +91,24 @@ namespace QuizR.Classes
             //wyslij do uczestnikow rozpoczecie quizu z liczba pytan i ConnID ownera ( w celu przekazywania odpowiedzi )
             Clients.OthersInGroup(name).startQuiz(n, Context.ConnectionId);
 
-            //rozpocznij watek obslugi quizu, podajac nazwe quizu i liste pytan i conn ID ownera
+            //rozpocznij watek obslugi quizu, podajac nazwe quizu i liste pytan i conn Name ownera
             Thread quizThread = new Thread(HandleQuiz);
-            var paramArr = new object[] { name, questionSet.Questions };
+            var paramArr = new object[] { name, room.Set.Questions };
             quizThread.Start(paramArr);
         }
 
         // udzielenie odpowiedzi
         public void Answer(int questionID, string answer, string roomName, string ownerConnID)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
             //sprawdz ownera
-            //var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == roomName); //znajdz z bazy
+            //var room = db.Rooms.Include(r => r.Owner).First(r => r.Name == roomName); //znajdz z bazy
             //var owner = room.Owner;
 
-            //wczytaj z bazy pytanie o takim ID i jego prawidlowa odpowiedz
+            //wczytaj z bazy pytanie o takim Name i jego prawidlowa odpowiedz
             var question = db.Questions.First(q => q.ID == questionID);
             var correctAnswer = question.Correct;
 
@@ -120,14 +122,14 @@ namespace QuizR.Classes
                 Clients.Client(ownerConnID).addPoint(userName);
 
             //info na debug
-            Debug.WriteLine(userName + " odpowiedział " + (guessed ? "" : "nie") + "poprawnie na pytanie o ID: " + questionID);
+            Debug.WriteLine(userName + " odpowiedział " + (guessed ? "" : "nie") + "poprawnie na pytanie o Name: " + questionID);
             Debug.WriteLine(" Odpowiedź: " + answer + ", poprawna: " + correctAnswer);
         }
 
         //przeslij tabele z rankingiem od ownera do uczestnikow
         public void ShowRanking(string rankingJSON, string name)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
@@ -147,7 +149,7 @@ namespace QuizR.Classes
         // opuszczanie quizu
         public void LeaveQuiz(string name)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
@@ -176,7 +178,7 @@ namespace QuizR.Classes
         // rozłączenie z hubem (bardziej do debugowania)
         public override Task OnDisconnected(bool stopCalled)
         {
-            //znajdz z kontekstu ID i nick uzytkownika
+            //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 

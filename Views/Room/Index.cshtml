@@ -1,39 +1,54 @@
-﻿@using Microsoft.AspNet.Identity;
-@model QuizR.Models.QuizRoom
+﻿@model List<QuizR.Models.QuizRoom>
+
 @{
-    ViewBag.Title = Model.ID;
+    ViewBag.Title = "Lista pokoi";
 }
 
+<h2>Dostępne pokoje rozgrywki</h2>
+<br />
 
-<input type="hidden" id="ownerConnID" />
-<input type="hidden" id="userID" value="@User.Identity.GetUserId()" />
-
-
-<div class="card text-white bg-info">
-    <div class="card-body">
-        <p id="roomName" class="card-text">@Model.ID</p>
-    </div>
-</div>
-<hr />
-@if (Model.Owner.Id == User.Identity.GetUserId())
+<p>
+    @Html.ActionLink("Utwórz", "Create", routeValues: null, new { @class = "btn btn-info" })
+</p>
+@if (Model.Count == 0)
 {
-    //widok wlasciciela
-    Html.RenderPartial("_RoomOwner", Model);
-    @section scripts{
-        @Scripts.Render("~/Scripts/jquery-1.6.4.min.js")
-        @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.min.js")
-        @Scripts.Render("~/signalr/hubs")
-        @Scripts.Render("~/Scripts/owner.js")
-    }
+    <div class="card border-warning" style="width: 40%; position: absolute; left: 50%; transform: translate(-50%, 0)">
+        <div class="card-body">
+            <h3 class="card-title">Brak dostępnych pokoi!</h3>
+            <p class="card-text">
+                Bądź pierwszy! Użyj przycisku "Utwórz".
+            </p>
+        </div>
+    </div>
 }
 else
 {
-    //widok uczestnika
-    Html.RenderPartial("_RoomParticipant", Model);
-    @section scripts{
-        @Scripts.Render("~/Scripts/jquery-1.6.4.min.js")
-        @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.min.js")
-        @Scripts.Render("~/signalr/hubs")
-        @Scripts.Render("~/Scripts/participant.js")
-    }
+
+    <table class="table table-hover table-dark">
+        <tr class="border-2 border-light table-primary">
+            <th>Nazwa pokoju</th>
+            <th>Właściciel</th>
+            <th>Uczestnicy</th>
+            <th>Akcje</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="border-2 border-light">
+                <td>
+                    @item.ID
+                </td>
+                <td>
+                    @item.Owner.UserName
+                </td>
+                <td>
+                    @item.Users.Count
+                </td>
+                <td>
+                    @Html.ActionLink("Dołącz", "Play", new { id = item.ID }, new { @class = "btn btn-outline-success" })
+                </td>
+            </tr>
+        }
+
+    </table>
 }

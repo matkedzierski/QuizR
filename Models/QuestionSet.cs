@@ -10,7 +10,6 @@ namespace QuizR.Models
         public int ID { get; set; }
 
         [Display(Name = "Nazwa zestawu")]
-        
         [Required(ErrorMessage = "Nie podano nazwy zestawu")]
         public string Name { get; set; }
         

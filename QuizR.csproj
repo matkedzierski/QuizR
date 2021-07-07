@@ -197,7 +197,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Room\Index.cshtml" />
+    <Content Include="Views\Room\Play.cshtml" />
     <Content Include="Views\Questions\Manage.cshtml" />
     <Content Include="Views\Questions\Create.cshtml" />
     <Content Include="Views\Questions\Delete.cshtml" />
@@ -210,6 +210,8 @@
     <Content Include="Views\QuestionSets\Index.cshtml" />
     <Content Include="Views\QuestionSets\Edit.cshtml" />
     <Content Include="Views\Questions\Edit.cshtml" />
+    <Content Include="Views\Room\Index.cshtml" />
+    <Content Include="Views\Room\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

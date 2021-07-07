@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNet.Identity
+@using QuizR.Models
+@using System.Data.Entity
+@model QuizR.Models.QuizRoom
+
+
+@{
+    ViewBag.Title = "Nowy pokój";
+
+    var userID = User.Identity.GetUserId();
+    var db = new ApplicationDbContext();
+    var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == userID).ToList();
+
+    var setList = new List<SelectListItem>() { };
+
+    foreach (var qs in list)
+    {
+        setList.Add(new SelectListItem() { Value = qs.ID.ToString(), Text = qs.Name });
+    }
+}
+
+<h2>Tworzenie pokoju</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Podaj informacje</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID, new { htmlAttributes = new { @class = "form-control form-control-lg" } })
+                @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Set, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Set", setList, new { @class = "form-control form-control-lg" })                                                          @{/*TODO*/}
+                @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Utwórz" class="btn btn-outline-success" />
+                @Html.ActionLink("Powrót", "Index", routeValues: null, new { @class = "btn btn-outline-primary" })
+
+            </div>
+        </div>
+    </div>
+}

@@ -1,11 +1,11 @@
 ﻿@using Microsoft.AspNet.Identity;
-@model QuizR.Models.RoomViewModel
+@model QuizR.Models.QuizRoom
 
 Widok właściciela
 
 
-<div class="row col-2">
-    <button id="startButton" class="btn-lg btn-success">
+<div class="row justify-content-center">
+    <button id="startButton" class="btn-lg btn-success col-2">
         Rozpocznij!
     </button>
 </div>
@@ -21,7 +21,7 @@ Widok właściciela
                     <th width="70%">
                         Pseudonim
                     </th>
-                    <th id="pointsColumn" data-sort="int" data-sort-default="desc" data-sort-onload=yes>
+                    <th id="pointsColumn">
                         Liczba punktów
                     </th>
                 </tr>

@@ -38,23 +38,20 @@ namespace QuizR.Controllers
 
         // POST: QuestionSets/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(QuestionSet set)
         {
-            try
+            var user = UserManager.FindById(User.Identity.GetUserId());
+
+            //var set = new QuestionSet() { Owner = user, Name = name };
+            if(ModelState.IsValid)
             {
-                var user = UserManager.FindById(User.Identity.GetUserId());
-                
-                string name = collection["Name"];
-                var set = new QuestionSet() { Owner = user, Name = name }; 
+                set.Owner = user;
                 db.QuestionSets.Add(set);
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(set);
         }
 
         // GET: QuestionSets/Edit/5
