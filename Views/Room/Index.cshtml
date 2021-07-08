@@ -1,4 +1,5 @@
-﻿@model List<QuizR.Models.QuizRoom>
+﻿@using Microsoft.AspNet.Identity
+@model List<QuizR.Models.QuizRoom>
 
 @{
     ViewBag.Title = "Lista pokoi";
@@ -29,7 +30,7 @@ else
             <th>Nazwa pokoju</th>
             <th>Właściciel</th>
             <th>Uczestnicy</th>
-            <th>Akcje</th>
+            <th class="text-center">Akcje</th>
         </tr>
 
         @foreach (var item in Model)
@@ -44,8 +45,13 @@ else
                 <td>
                     @item.Users.Count
                 </td>
-                <td>
+                <td class="text-center">
                     @Html.ActionLink("Dołącz", "Play", new { id = item.ID }, new { @class = "btn btn-outline-success" })
+                    @if (item.Owner.Id == User.Identity.GetUserId())
+                    {
+                        @Html.ActionLink("Edytuj", "Edit", new { id = item.ID }, new { @class = "btn btn-outline-warning" }) @:
+                        @Html.ActionLink("Usuń", "Delete", new { id = item.ID }, new { @class = "btn btn-outline-danger" })
+                    }
                 </td>
             </tr>
         }

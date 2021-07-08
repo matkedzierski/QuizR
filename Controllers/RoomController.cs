@@ -50,33 +50,44 @@ namespace QuizR.Controllers
         // GET: Room/Create
         public ActionResult Create()
         {
-            
+            var userID = User.Identity.GetUserId();
+            var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == userID).ToList();
+            ViewBag.MySets = list;
+
             return View();
         }
 
         // POST: Room/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(QuizRoom room, string SetID)
         {
-            try
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            
+            var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == user.Id).ToList();
+            ViewBag.MySets = list;
+
+            if (db.Rooms.Find(room.ID) != null)
             {
-                var user = UserManager.FindById(User.Identity.GetUserId());
-
-                string id = collection["ID"];
-                int setID = int.Parse(collection["Set"]);
-                var set = db.QuestionSets.Find(setID);
-
-
-                var qr = new QuizRoom() { ID = id, Owner = user, Set = set };
-                db.Rooms.Add(qr);
-                db.SaveChanges();
-
-                return RedirectToAction("Play", new { id = id });
+                ModelState.Clear();
+                ModelState.AddModelError("ID", "Pokój o takiej nazwie już istnieje!");
+                return View(room);
             }
-            catch
+
+            if(SetID != null)
+                room.Set = db.QuestionSets.Find(int.Parse(SetID));
+            room.Owner = user;
+
+            ModelState.Clear();
+            if (!TryValidateModel(room))
             {
-                return View();
+                return View(room);
             }
+
+            
+            db.Rooms.Add(room);
+            db.SaveChanges();
+
+            return RedirectToAction("Play", new { id = room.ID });
         }
     }
 

@@ -80,7 +80,7 @@ namespace QuizR.Classes
                 .First(r => r.ID == name); 
             var owner = room.Owner;
             if (owner.Id != userID) return;
-
+            
             //wczytaj z bazy zestaw pytan powiazany z pokojem,
             var n = room.Set.Questions.Count;
 

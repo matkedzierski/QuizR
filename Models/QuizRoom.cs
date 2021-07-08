@@ -10,6 +10,7 @@ namespace QuizR.Models
     {
         [Key]
         [Display(Name = "Unikalna nazwa pokoju")]
+        [Required(ErrorMessage = "Nie podano nazwy pokoju!")]
         public string ID { get; set; }
 
         [Required(ErrorMessage = "Nie wybrano zestawu pytań!")]

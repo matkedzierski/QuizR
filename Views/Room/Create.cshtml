@@ -6,17 +6,6 @@
 
 @{
     ViewBag.Title = "Nowy pokój";
-
-    var userID = User.Identity.GetUserId();
-    var db = new ApplicationDbContext();
-    var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == userID).ToList();
-
-    var setList = new List<SelectListItem>() { };
-
-    foreach (var qs in list)
-    {
-        setList.Add(new SelectListItem() { Value = qs.ID.ToString(), Text = qs.Name });
-    }
 }
 
 <h2>Tworzenie pokoju</h2>
@@ -41,8 +30,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Set, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Set", setList, new { @class = "form-control form-control-lg" })                                                          @{/*TODO*/}
-                @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+                @Html.DropDownList("SetID", new SelectList(ViewBag.MySets, "Id", "Name"), new { @class = "form-control form-control-lg" })                                                          @{/*TODO*/}
+                @Html.ValidationMessageFor(model => model.Set, "", new { @class = "text-danger" })
             </div>
         </div>
 
