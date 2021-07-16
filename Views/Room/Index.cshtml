@@ -36,13 +36,13 @@ else
         @foreach (var item in Model)
         {
             <tr class="border-2 border-light">
-                <td>
-                    @item.ID
+                <td style="vertical-align: middle">
+                    @item.Name
                 </td>
-                <td>
+                <td style="vertical-align: middle">
                     @item.Owner.UserName
                 </td>
-                <td>
+                <td style="vertical-align: middle">
                     @item.Users.Count
                 </td>
                 <td class="text-center">

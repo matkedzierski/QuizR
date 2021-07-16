@@ -1,0 +1,24 @@
+﻿@model QuizR.Models.QuizRoom
+
+@{
+    ViewBag.Title = "Usuwanie pokoju";
+}
+
+<h2>Usuwanie pokoju</h2>
+
+<h3>Czy na pewno chcesz usunąć pokój <b>@Model.Name</b>?</h3>
+<div>
+    <h4 class="text-danger">Ta operacja jest nieodwracalna!</h4>
+    <hr />
+    <dl class="dl-horizontal">
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Usuń" class="btn btn-outline-danger" />
+        @Html.ActionLink("Anuluj", "Index", routeValues: null, new { @class = "btn btn-outline-success" })
+    </div>
+    }
+</div>

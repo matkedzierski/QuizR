@@ -8,10 +8,12 @@ namespace QuizR.Models
 {
     public class QuizRoom
     {
-        [Key]
-        [Display(Name = "Unikalna nazwa pokoju")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+
+        [Display(Name = "Nazwa pokoju")]
         [Required(ErrorMessage = "Nie podano nazwy pokoju!")]
-        public string ID { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Nie wybrano zestawu pytań!")]
         [Display(Name = "Zestaw pytań")]

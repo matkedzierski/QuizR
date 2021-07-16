@@ -35,18 +35,18 @@ namespace QuizR.Classes
         }
 
         // dolaczanie uczestnika do quizu
-        public void JoinQuiz(string name)
+        public void JoinQuiz(int id)
         {
             //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
             //dodaj uzytkownika do grupy SignalR 
-            Groups.Add(Context.ConnectionId, name);
+            Groups.Add(Context.ConnectionId, id.ToString());
 
 
             //znajdz w bazie pokoj i uzytkownika
-            var room = db.Rooms.Include(r => r.Owner).FirstOrDefault(r => r.ID == name); //znajdz z bazy
+            var room = db.Rooms.Include(r => r.Owner).FirstOrDefault(r => r.ID == id); //znajdz z bazy
             var user = db.Users.Find(userID);
 
             if (room.Owner.Id == userID) return; // nie dodawaj ownera do listy uczestnikow tylko do grupy signalR
@@ -58,16 +58,16 @@ namespace QuizR.Classes
             }
 
             //powiadom pozostalych o dolaczeniu
-            Clients.Group(name).userJoined(userName);
+            Clients.Group(id.ToString()).userJoined(userName);
 
             //info na debug
-            Debug.WriteLine(userName + " dołączył do quizu: " + name);
+            Debug.WriteLine(userName + " dołączył do quizu: " + id);
             Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
             Debug.WriteLine("  UserID: " + userID);
         }
 
         // rozpoczęcie quizu
-        public void StartQuiz(string name)
+        public void StartQuiz(int id)
         {
             //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
@@ -77,7 +77,7 @@ namespace QuizR.Classes
             var room = db.Rooms
                 .Include(r => r.Owner)
                 .Include(r => r.Set)
-                .First(r => r.ID == name); 
+                .First(r => r.ID == id); 
             var owner = room.Owner;
             if (owner.Id != userID) return;
             
@@ -89,11 +89,11 @@ namespace QuizR.Classes
             Debug.WriteLine("Liczba pytan: " + n);
 
             //wyslij do uczestnikow rozpoczecie quizu z liczba pytan i ConnID ownera ( w celu przekazywania odpowiedzi )
-            Clients.OthersInGroup(name).startQuiz(n, Context.ConnectionId);
+            Clients.OthersInGroup(id.ToString()).startQuiz(n, Context.ConnectionId);
 
             //rozpocznij watek obslugi quizu, podajac nazwe quizu i liste pytan i conn Name ownera
             Thread quizThread = new Thread(HandleQuiz);
-            var paramArr = new object[] { name, room.Set.Questions };
+            var paramArr = new object[] { id, room.Set.Questions };
             quizThread.Start(paramArr);
         }
 
@@ -127,14 +127,14 @@ namespace QuizR.Classes
         }
 
         //przeslij tabele z rankingiem od ownera do uczestnikow
-        public void ShowRanking(string rankingJSON, string name)
+        public void ShowRanking(string rankingJSON, int id)
         {
             //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
             //sprawdz czy jest ownerem
-            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == name); //znajdz z bazy
+            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == id); //znajdz z bazy
             var owner = room.Owner;
             if (owner.Id != userID) return;
 
@@ -143,21 +143,21 @@ namespace QuizR.Classes
 
             Thread.Sleep(4000);
             //wyslij do uczestnikow zakonczenie quizu z liczba pytan i ConnID ownera ( w celu przekazywania odpowiedzi )
-            Clients.OthersInGroup(name).showRanking(rankingJSON);
+            Clients.OthersInGroup(id.ToString()).showRanking(rankingJSON);
         }
 
         // opuszczanie quizu
-        public void LeaveQuiz(string name)
+        public void LeaveQuiz(int id)
         {
             //znajdz z kontekstu Name i nick uzytkownika
             var userID = Context.User.Identity.GetUserId();
             var userName = Context.User.Identity.Name;
 
             //usun uzytkownika z grupy SignalR
-            Groups.Remove(Context.ConnectionId, name);
+            Groups.Remove(Context.ConnectionId, id.ToString());
 
             //znajdz w bazie pokoj i usera
-            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == name); //znajdz z bazy
+            var room = db.Rooms.Include(r => r.Owner).First(r => r.ID == id); //znajdz z bazy
             var roomUser = room?.Users.Find(u => u.Id == userID); // znajdz uzytkownika w kontekscie pokoju
 
             if (room.Owner.Id == userID) return; // nie usuwaj ownera z listy uczestnikow tylko z grupy signalR
@@ -167,10 +167,10 @@ namespace QuizR.Classes
             db.SaveChanges();
 
             //powiadom pozostalych o opuszczeniu
-            Clients.OthersInGroup(name).userLeft(userName);
+            Clients.OthersInGroup(id.ToString()).userLeft(userName);
 
             //info na debug
-            Debug.WriteLine(userName + " opuścił quiz: " + name);
+            Debug.WriteLine(userName + " opuścił quiz: " + id);
             Debug.WriteLine("  ConnectionID: " + Context.ConnectionId);
             Debug.WriteLine("  UserID: " + userID);
         }
@@ -198,7 +198,7 @@ namespace QuizR.Classes
         {
             //wczytaj parametry watku
             var pars = paramArray as object[];
-            var name = pars[0] as string;
+            var roomID = (int) pars[0];
             var qs = pars[1] as List<Question>;
             var i = 1;
             var n = qs.Count;
@@ -208,13 +208,13 @@ namespace QuizR.Classes
             foreach (Question q in qs)
             {
                 Debug.WriteLine("Question: " + q.Content);
-                Clients.OthersInGroup(name).nextQuestion(q.ID, i, n, q.Content, q.Aans, q.Bans, q.Cans, q.Dans);
+                Clients.OthersInGroup(roomID.ToString()).nextQuestion(q.ID, i, n, q.Content, q.Aans, q.Bans, q.Cans, q.Dans);
                 i++;
                 Thread.Sleep(10000);
             }
 
             //powiadom wszystkich, wlacznie z ownerem o zakonczeniu
-            Clients.Group(name).endQuiz();
+            Clients.Group(roomID.ToString()).endQuiz();
         } 
     }
 }

@@ -5,15 +5,29 @@
     {
     @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Witaj, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage",
-           @class = (ViewContext.RouteData.Values["action"].ToString() == "Index"
-                   && ViewContext.RouteData.Values["controller"].ToString() == "Manage") ? "nav-link active" : "nav-link"
-       })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Wyloguj</a></li>
-    </ul>
+<ul class="nav navbar-nav navbar-right">
+
+    <li>
+        @Html.ActionLink("Witaj, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new
+        {
+            title = "Manage",
+       @class = (ViewContext.RouteData.Values["action"].ToString() == "Index"
+               && ViewContext.RouteData.Values["controller"].ToString() == "Manage") ? "nav-link active" : "nav-link"
+        })
+    </li>
+
+    <li>
+        @Html.ActionLink("Moje zestawy", "Index", "QuestionSets", routeValues: null, htmlAttributes: new
+        {
+            title = "Zarządzaj zestawami",
+                @class = (ViewContext.RouteData.Values["action"].ToString() == "Index"
+                    && ViewContext.RouteData.Values["controller"].ToString() == "QuestionSets") ? "nav-link active" : "nav-link"
+        })
+    </li>
+
+
+    <li><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Wyloguj</a></li>
+</ul>
     }
 }
 else

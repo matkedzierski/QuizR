@@ -8,7 +8,7 @@
     $.connection.hub.start((function () {
 
         //dolacz do quizu
-        chat.server.joinQuiz($('#roomName').text());
+        chat.server.joinQuiz($('#roomID').val());
 
 
     }));
@@ -100,7 +100,7 @@
 
     //przy zamykaniu strony opusc quiz
     window.addEventListener("beforeunload", function (e) {
-        chat.server.leaveQuiz($('#roomName').text());
+        chat.server.leaveQuiz($('#roomID').val());
         return null;
     });
 
@@ -108,7 +108,7 @@
     $('#aAns, #bAns, #cAns, #dAns').click(function () {
         $('#answers').hide(0);
         var ans = this.id[0].toUpperCase();
-        chat.server.answer(currentQuestion, ans, $('#roomName').text(), $('#ownerConnID').text());
+        chat.server.answer(currentQuestion, ans, $('#roomID').val(), $('#ownerConnID').text());
 
     });
 
@@ -122,7 +122,5 @@
         //let c = parseInt($('#userCount').text());
         //$('#userCount').text(c + x);
     }
-
-
 
 });

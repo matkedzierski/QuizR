@@ -8,13 +8,13 @@
     $.connection.hub.start((function () {
 
         //dolacz do quizu
-        chat.server.joinQuiz($('#roomName').text());
+        chat.server.joinQuiz($('#roomID').val());
 
 
         //startowanie quizu z przycisku ()
         $('#startButton').click(function ownerStart() {
             //wywolaj na hubie StartQuiz
-            chat.server.startQuiz($('#roomName').text());
+            chat.server.startQuiz($('#roomID').val());
             $('#startButton').hide(200);
 
             //zeruj punkty

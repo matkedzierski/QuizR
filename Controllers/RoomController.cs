@@ -29,19 +29,21 @@ namespace QuizR.Controllers
             return View(rooms);
         }
 
-        // GET: Room/Play?RoomID=xxx
-        public ActionResult Play(string id)
+        // GET: Room/Play/4
+        public ActionResult Play(int? id)
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
             
             if (id == null)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index");
             else //jesli podano id pokoju
             {
                 Debug.WriteLine("Finding: " + id);
                 var room = db.Rooms.Include(r => r.Owner).FirstOrDefault(r => r.ID == id); //znajdz z bazy
-                if (room == null) //jesli w bazie nie ma
-                    return View("Error");
+                if (room == null) //jesli w bazie ma, to przejdz do tworzenia
+                {
+                    return RedirectToAction("Create");
+                }
                 return View(room);
             }
         }
@@ -66,16 +68,11 @@ namespace QuizR.Controllers
             var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == user.Id).ToList();
             ViewBag.MySets = list;
 
-            if (db.Rooms.Find(room.ID) != null)
-            {
-                ModelState.Clear();
-                ModelState.AddModelError("ID", "Pokój o takiej nazwie już istnieje!");
-                return View(room);
-            }
 
             if(SetID != null)
                 room.Set = db.QuestionSets.Find(int.Parse(SetID));
             room.Owner = user;
+
 
             ModelState.Clear();
             if (!TryValidateModel(room))
@@ -88,6 +85,99 @@ namespace QuizR.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Play", new { id = room.ID });
+        }
+
+
+
+
+        // GET: Room/Edit/4
+        public ActionResult Edit(int id)
+        {
+            Debug.WriteLine(id);
+            //sprawdzanie czy jest wlascicielem
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            var room = db.Rooms
+                .Include(r => r.Owner)
+                .SingleOrDefault(r => r.ID == id);
+            if (room == null || !room.Owner.Equals(user)) return View("Error");
+
+
+            var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == user.Id).ToList();
+            ViewBag.MySets = list;
+
+            return View(room);
+        }
+
+        // POST: Room/Edit/4
+        [HttpPost]
+        public ActionResult Edit(QuizRoom room, string SetID)
+        {
+            Debug.WriteLine("new: " + room.Name);
+            var user = UserManager.FindById(User.Identity.GetUserId());
+
+            var list = db.QuestionSets.Include(qs => qs.Owner).Where(qs => qs.Owner.Id == user.Id).ToList();
+            ViewBag.MySets = list;
+
+            //jesli wybrano zestaw
+            if (SetID != null)
+                room.Set = db.QuestionSets.Find(int.Parse(SetID));
+            room.Owner = user;
+
+            ModelState.Clear();
+            if (!TryValidateModel(room))
+            {
+                return View(room);
+            }
+
+            var dbRoom = db.Rooms.Find(room.ID);
+            db.Entry(dbRoom).CurrentValues.SetValues(room);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
+
+
+
+        // GET: Room/Delete/5
+        public ActionResult Delete(int id)
+        {
+            //sprawdzanie czy jest wlascicielem
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            var room = db.Rooms
+                .Include(r => r.Owner)
+                .SingleOrDefault(r => r.ID == id);
+
+            if (room == null || !room.Owner.Equals(user)) return View("Error");
+
+            return View(room);
+        }
+
+        // POST: Room/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection) //formcollection żeby nie było dwóch takich samych metod
+        {
+            try
+            {
+                //sprawdzanie czy jest wlascicielem
+                var user = UserManager.FindById(User.Identity.GetUserId());
+                var room = db.Rooms
+                    .Include(r => r.Owner)
+                    .SingleOrDefault(r => r.ID == id);
+
+                if (room == null || !room.Owner.Equals(user)) return View("Error");
+
+                //usuwanie
+                room.Users.Clear();
+                db.Rooms.Remove(room);
+                db.SaveChanges();
+            }
+            catch
+            {
+                Debug.WriteLine("Nie udalo sie usunac!");
+            }
+            return RedirectToAction("Index");
         }
     }
 

@@ -17,7 +17,10 @@
                 </li>
                 
                 <li class="nav-item">
-                    @Html.ActionLink("Lista pokoi", "Index", "Room", routeValues: null, new { @class = ViewContext.RouteData.Values["action"].ToString() == "About" ? "nav-link active" : "nav-link"  })
+                    @Html.ActionLink("Lista pokoi", "Index", "Room", routeValues: null, new {
+                   @class = (ViewContext.RouteData.Values["action"].ToString() == "Index"
+                   && ViewContext.RouteData.Values["controller"].ToString() == "Room") ? "nav-link active" : "nav-link"
+               })
                 </li>
                 <!--
                 <li class="nav-item">
@@ -26,11 +29,7 @@
                 -->
 
             </ul>
-            @using (Html.BeginForm("Index", "Room", FormMethod.Get, new { @class="d-flex", style="padding-right: 10px;" }))
-            { 
-                <input class="form-control me-sm-2" type="text" placeholder="Kod pokoju" name="RoomID">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Dołącz</button>
-            }
+            
 
             @Html.Partial("_LoginPartial")
         </div>

@@ -1,17 +1,18 @@
 ﻿@using Microsoft.AspNet.Identity;
 @model QuizR.Models.QuizRoom
 @{
-    ViewBag.Title = Model.ID;
+    ViewBag.Title = Model.Name;
 }
 
 
 <input type="hidden" id="ownerConnID" />
 <input type="hidden" id="userID" value="@User.Identity.GetUserId()" />
+<input type="hidden" id="roomID" value="@Model.ID"/>
 
 
 <div class="card text-white bg-info">
     <div class="card-body">
-        <p id="roomName" class="card-text">@Model.ID</p>
+        <p id="roomName" class="card-text">@Model.Name</p>
     </div>
 </div>
 <hr />
