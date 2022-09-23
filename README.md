@@ -1,4 +1,4 @@
-# WATHoot
+# QuizR
 A web platform for organizing real-time quizes using SignalR
 
 The app is created using ASP.NET MVC. It lets you manage your own set of questions and conduct a quiz, that can be attended by any registered user.<br/>
